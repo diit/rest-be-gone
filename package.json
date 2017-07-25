@@ -1,0 +1,15 @@
+{
+  "name": "graphqlify",
+  "version": "0.0.1",
+  "description": "GraphQL-ify REST API's",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dale Inverarity <dale@diit.ca>",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.81.0",
+    "vorpal": "^1.12.0"
+  }
+}
