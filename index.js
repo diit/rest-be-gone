@@ -8,39 +8,67 @@ const schemaMap = {
     object: "String" // default fallback
 };
 
+let finalSchema = '';
+
+function generateType(ref, jsonBlock, cb) {
+    let schema = '', schemaCount = 0, nestedData = {
+        found: false,
+        jsonBlock: null
+    };
+
+    for (var item in jsonBlock) {
+        if (jsonBlock[item] !== null && typeof jsonBlock[item] === 'object') {
+            nestedData.found = true;
+            nestedData.jsonBlock= jsonBlock[item];
+        }
+        schemaCount += 1;
+        schema += `\t${item}: ${schemaMap[typeof jsonBlock[item]]}\n`
+    }
+
+    ref.log(`Converted ${schemaCount} fields...`);
+
+    ref.prompt({
+        type: 'input',
+        name: 'noun',
+        message: 'What is this resource (ie. Product, User)? '
+    }, function (result) {
+        ref.log(`Okay, ${result.noun} it is!`);
+
+        schema = `type ${result.noun} {\n${schema}}`;
+        finalSchema += `\n${schema}\n`
+
+        if (nestedData.found) {
+            ref.prompt({
+                type: 'confirm',
+                name: 'confirm',
+                message: 'We found some nested data, create multiple types? '
+            }, function (result) {
+                if (result.confirm) {
+                    ref.log('Okay, hold on to your hat, here we go...');
+                    generateType(ref, nestedData.jsonBlock, cb);
+                }
+            });
+        } else {
+            cb(finalSchema);
+        }
+    });
+}
+
 vorpal
     .command('start', 'GraphQLify -u, --url REST URL.')
     .option('-u, --url <url>', 'URL of REST API you want to graphqlify')
     .action(function(args, callback) {
-        const self = this;
-        let schema = '', schemaCount = 0;
-
         this.log('Scanning: ', args.options.url);
         request.get(args.options.url, (error, response, body) => {
-            let requestBody = JSON.parse(body).result; //.result is for debug, should recurse
+            let requestBody = JSON.parse(body);
 
             this.log('Scanning complete, parsing...');
 
-            for (var item in requestBody) {
-                // if (typeof requestBody[item] !== null && typeof requestBody[item] === object ) {
-
-                // }
-                schemaCount += 1;
-                schema += `\t${item}: ${schemaMap[typeof requestBody[item]]}\n`
-            }
-
-            this.log(`Converted ${schemaCount} fields...`);
-
-            this.prompt({
-                type: 'input',
-                name: 'noun',
-                message: 'What is this resource (ie. Product, User)? '
-            }, function (result) {
-                self.log(`Okay, ${result.noun} it is!`);
-                self.log('===============================')
-                self.log(`type ${result.noun} {\n${schema}}`);
-                self.log('===============================')
-                callback();
+            generateType(this, requestBody, schema => {
+                this.log('===============================')
+                this.log(schema);
+                this.log('===============================')
+                callback()
             });
         });
     });
