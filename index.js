@@ -26,6 +26,7 @@ function generateType(ref, jsonBlock, cb) {
     }
 
     ref.log(`Converted ${schemaCount} fields...`);
+    ref.log(schema)
 
     ref.prompt({
         type: 'input',
