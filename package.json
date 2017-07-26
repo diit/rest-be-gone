@@ -1,6 +1,6 @@
 {
   "name": "graphqlify",
-  "version": "0.0.1",
+  "version": "0.0.2-0",
   "description": "GraphQL-ify REST API's",
   "main": "index.js",
   "scripts": {
