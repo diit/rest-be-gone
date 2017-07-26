@@ -1,11 +1,15 @@
 {
-  "name": "graphqlify",
+  "name": "rest-be-gone",
   "version": "0.0.2-0",
   "description": "GraphQL-ify REST API's",
   "main": "index.js",
   "scripts": {
     "build": "babel src --out-dir lib",
     "test": "echo \"Error: no test specified\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diit/rest-be-gone.git"
   },
   "author": "Dale Inverarity <dale@diit.ca>",
   "license": "ISC",

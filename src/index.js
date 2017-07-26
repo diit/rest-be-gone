@@ -482,6 +482,6 @@ vorpal
     });
 
 vorpal
-  .delimiter('graphqlify$')
+  .delimiter('rest-be-gone$')
   .show()
-  .log('Started interactive GraphQLify session, type \'help\' for commands');
+  .log('Started interactive Rest-Be-Gone session, type \'help\' for commands');
